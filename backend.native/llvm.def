@@ -17,14 +17,15 @@ linkerOpts = -fPIC -fvisibility-inlines-hidden \
     -std=c++11 \
     -DNDEBUG -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS \
     -ldebugInfo -lLLVMTarget -lLLVMMC -lLLVMLinker -lLLVMTransformUtils -lLLVMBitWriter \
-    -lLLVMBitReader -lLLVMAnalysis -lLLVMProfileData -lLLVMCore -lLLVMSupport
+    -lLLVMBitReader -lLLVMAnalysis -lLLVMProfileData -lLLVMObject -lLLVMMCParser -lLLVMMC \
+    -lLLVMCore -lLLVMBinaryFormat -lLLVMSupport -lLLVMDemangle
 
 # ./llvm-config --libs analysis bitreader bitwriter core linker target
 
 
 linkerOpts.osx = \
     -Wl,-search_paths_first -Wl,-headerpad_max_install_names \
-    -lpthread -lz -lm  -lcurses
+    -lpthread -lz -lm  -lcurses -Wl,-U,_futimens -Wl,-U,_LLVMDumpType
 
 linkerOpts.linux=\
      -Wl,-z,noexecstack \

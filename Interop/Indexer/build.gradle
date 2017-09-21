@@ -44,7 +44,7 @@ List<String> ldflags = ["$llvmDir/$libclang", "-L$libclangextDir.absolutePath", 
 
 if (libclangextIsEnabled) {
     assert(isMac())
-    ldflags.addAll(['-Wl,--no-demangle', '-Wl,-search_paths_first', '-Wl,-headerpad_max_install_names'])
+    ldflags.addAll(['-Wl,--no-demangle', '-Wl,-search_paths_first', '-Wl,-headerpad_max_install_names', '-Wl,-U,_futimens'])
 
     List<String> llvmLibs = [
             "clangAST", "clangASTMatchers", "clangAnalysis", "clangBasic", "clangDriver", "clangEdit",
@@ -54,7 +54,7 @@ if (libclangextIsEnabled) {
             "clangToolingCore",
             "clangTooling", "clangFormat", "LLVMTarget", "LLVMMC", "LLVMLinker", "LLVMTransformUtils",
             "LLVMBitWriter", "LLVMBitReader", "LLVMAnalysis", "LLVMProfileData", "LLVMCore",
-            "LLVMSupport"
+            "LLVMSupport", "LLVMBinaryFormat", "LLVMDemangle"
     ].collect { "$llvmDir/lib/lib${it}.a".toString() }
 
     ldflags.addAll(llvmLibs)
