@@ -293,7 +293,7 @@ targetList.each { target ->
                 buildFile project('klib').file('platform.gradle')
                 dir project(':klib').projectDir
                 startParameter.projectProperties = [
-                        'kotlin_version' : kotlin_version,
+                        'konanVersion'  : konanVersion,
                         'name'           : defFile.name,
                         'defFile'        : defFile.file.absolutePath,
                         'konan.home'     : distDir,
