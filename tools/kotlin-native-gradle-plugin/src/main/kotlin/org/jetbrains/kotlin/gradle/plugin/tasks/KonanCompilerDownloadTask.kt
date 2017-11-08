@@ -28,16 +28,10 @@ import java.io.IOException
 open class KonanCompilerDownloadTask : DefaultTask() {
 
     internal companion object {
-        internal const val DOWNLOAD_URL = "https://download.jetbrains.com/kotlin/native"
+        internal const val BASE_DOWNLOAD_URL = "https://download.jetbrains.com/kotlin/native/releases"
 
         internal val KONAN_PARENT_DIR = "${System.getProperty("user.home")}/.konan"
     }
-
-    /**
-     * A list of tasks used to download dependencies. If empty then dependencies will be downloaded for the host.
-     * Isn't used if [downloadDependencies] is false.
-     */
-    @Internal var targets: MutableCollection<String> = mutableSetOf<String>()
 
     /** If true the task will also download dependencies for targets specified by [targets] property. */
     @Internal var downloadDependencies: Boolean = false
@@ -56,8 +50,9 @@ open class KonanCompilerDownloadTask : DefaultTask() {
         } else {
             try {
                 val konanCompiler = project.konanCompilerName()
-                logger.info("Downloading Kotlin/Native compiler from ${DOWNLOAD_URL}/$konanCompiler into ${KONAN_PARENT_DIR}")
-                DependencyProcessor(File(KONAN_PARENT_DIR), DOWNLOAD_URL, listOf(konanCompiler)).run()
+                val downloadUrlDirectory = "$BASE_DOWNLOAD_URL/${project.simpleOsName}"
+                logger.info("Downloading Kotlin/Native compiler from $downloadUrlDirectory/$konanCompiler into $KONAN_PARENT_DIR")
+                DependencyProcessor(File(KONAN_PARENT_DIR), downloadUrlDirectory, listOf(konanCompiler)).run()
             } catch (e: IOException) {
                 throw GradleScriptException("Cannot download Kotlin/Native compiler", e)
             }
@@ -66,11 +61,8 @@ open class KonanCompilerDownloadTask : DefaultTask() {
         // Download dependencies if a user said so.
         if (downloadDependencies) {
             val runner = KonanCompilerRunner(project)
-            if (targets.isEmpty()) {
-                // Download for the host.
-                runner.run("--check_dependencies")
-            } else {
-                targets.forEach { runner.run("--check_dependencies", "-target", it) }
+            project.konanExtension.konanTargets.forEach {
+                runner.run("--check_dependencies", "-target", it.userName)
             }
         }
     }
