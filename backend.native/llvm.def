@@ -3,7 +3,7 @@ headers = llvm-c/Core.h llvm-c/Target.h llvm-c/Analysis.h llvm-c/BitWriter.h \
 
 headerFilter = llvm-c/* DebugInfoC.h
 
-compilerOpts = -std=c99 -fPIC \
+compilerOpts = -std=c99 \
     -Wall -W -Wno-unused-parameter -Wwrite-strings -Wmissing-field-initializers \
     -pedantic -Wno-long-long -Wcovered-switch-default -Wdelete-non-virtual-dtor \
     -DNDEBUG -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
@@ -11,7 +11,7 @@ compilerOpts = -std=c99 -fPIC \
 
 linker = clang++
 
-linkerOpts = -fPIC -fvisibility-inlines-hidden \
+linkerOpts = -fvisibility-inlines-hidden \
     -Wall -W -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wmissing-field-initializers \
     -pedantic -Wno-long-long -Wcovered-switch-default -Wnon-virtual-dtor -Wdelete-non-virtual-dtor \
     -std=c++11 \
@@ -23,11 +23,11 @@ linkerOpts = -fPIC -fvisibility-inlines-hidden \
 # ./llvm-config --libs analysis bitreader bitwriter core linker target
 
 
-linkerOpts.osx = \
+linkerOpts.osx = -fPIC \
     -Wl,-search_paths_first -Wl,-headerpad_max_install_names \
     -lpthread -lz -lm  -lcurses -Wl,-U,_futimens -Wl,-U,_LLVMDumpType
 
-linkerOpts.linux=\
+linkerOpts.linux= -fPIC \
      -Wl,-z,noexecstack \
      -lrt -ldl -lpthread -lz -lm
 
@@ -37,5 +37,9 @@ linkerOpts.mingw = -lole32 -luuid -static-libgcc -static-libstdc++ \
 excludedFunctions = LLVMInitializeAllAsmParsers LLVMInitializeAllAsmPrinters LLVMInitializeAllDisassemblers \
     LLVMInitializeAllTargetInfos LLVMInitializeAllTargetMCs LLVMInitializeAllTargets LLVMInitializeNativeTarget \
     LLVMInitializeNativeAsmParser LLVMInitializeNativeAsmPrinter LLVMInitializeNativeDisassembler
+
+# It looks like mingw port compiled without LLVM_ENABLE_DUMP
+# see https://reviews.llvm.org/D35899?id=108318 for reference 
+excludedFunctions.mingw = LLVMDumpType
 
 strictEnums = LLVMIntPredicate LLVMOpcode LLVMDLLStorageClass LLVMCallConv LLVMThreadLocalMode LLVMAtomicOrdering
