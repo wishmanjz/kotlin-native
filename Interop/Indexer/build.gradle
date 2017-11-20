@@ -22,6 +22,7 @@ apply plugin: 'kotlin'
 apply plugin: org.jetbrains.kotlin.NativeInteropPlugin
 
 apply plugin: 'c'
+apply plugin: 'cpp'
 
 final Project libclangextProject = project(":libclangext")
 final String libclangextTask = libclangextProject.path + ":build"
@@ -67,6 +68,7 @@ model {
         clangstubs(NativeLibrarySpec) {
             sources {
                 c.source.srcDir 'prebuilt/nativeInteropStubs/c'
+		cpp.source.srcDir 'prebuilt/nativeInteropStubs/cpp'
             }
 
             binaries.all {
